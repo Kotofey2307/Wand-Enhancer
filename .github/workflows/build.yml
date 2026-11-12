@@ -15,8 +15,16 @@ jobs:
         with:
           node-version: 22
       - uses: microsoft/setup-msbuild@v2
-      - run: .\build.cmd -SkipTests
+      - name: Build Web Panel
+        working-directory: web-panel
+        run: |
+          pnpm install
+          pnpm run build
+      - name: Build EXE
+        run: |
+          nuget restore Wand-Enhancer.sln
+          msbuild Wand-Enhancer.sln /p:Configuration=Release /p:Platform="Any CPU"
       - uses: actions/upload-artifact@v4
         with:
           name: WandEnhancer
-          path: WandEnhancer/bin/Release/WandEnhancer.exe
+          path: WandEnhancer/bin/Release/
